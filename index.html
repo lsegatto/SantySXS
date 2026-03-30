@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Santy SexShop EMPRESA</title>
+<title>Santy SexShop 🚀</title>
 <style>
 :root{--bg:#111;--text:#fff;--card:#222}
 .light{--bg:#f5f5f5;--text:#000;--card:#fff}
@@ -16,106 +16,145 @@ nav a{color:#fff;text-decoration:none;font-weight:bold}
 .slide{min-width:100%;display:flex;align-items:center;justify-content:center;font-size:36px;background:#333}
 .container{padding:20px}
 .products{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px}
-.card{background:var(--card);padding:15px;border-radius:12px;text-align:center;transition:.3s}
-.card:hover{transform:scale(1.1)}
+.card{background:var(--card);padding:15px;border-radius:12px;text-align:center;transition:.3s;box-shadow:0 4px 15px rgba(0,0,0,0.5)}
+.card:hover{transform:scale(1.08)}
 .card img{width:100%;border-radius:10px}
 .btn{background:#e91e63;border:none;padding:10px;color:#fff;cursor:pointer;border-radius:5px;margin:5px}
-.cart{position:fixed;right:0;top:0;width:330px;height:100%;background:#000;padding:15px;overflow:auto}
-input{padding:8px;border-radius:5px;border:none;margin:5px;width:90%}
+.btn:hover{transform:scale(1.05)}
+
+/* TOAST */
+.toast{
+position:fixed;
+bottom:100px;
+right:20px;
+background:#333;
+padding:15px;
+border-radius:8px;
+opac:0;
+opacity:0;
+transform:translateY(20px);
+transition:.4s;
+z-index:2000;
+}
+.toast.show{opacity:1;transform:translateY(0)}
+
+/* CART */
+.cart{position:fixed;right:0;top:0;width:330px;height:100%;background:#000;padding:15px;overflow:auto;transform:translateX(100%);transition:.4s;z-index:1001}
+.cart.open{transform:translateX(0)}
+.overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:#000a;opacity:0;pointer-events:none;transition:.3s;z-index:1000}
+.overlay.show{opacity:1;pointer-events:all}
+.cart-toggle{position:fixed;right:20px;bottom:20px;background:#e91e63;border:none;padding:15px;border-radius:50%;color:#fff;font-size:20px;cursor:pointer;z-index:1002}
+.badge{position:absolute;top:-5px;right:-5px;background:red;border-radius:50%;padding:5px 8px;font-size:12px}
+
+.info{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;padding:20px}
+.info-box{background:var(--card);padding:15px;border-radius:10px;text-align:center}
+
+.stars{color:gold;font-size:14px}
+
 footer{text-align:center;padding:15px;background:#000;margin-top:20px}
-.modal{position:fixed;top:0;left:0;width:100%;height:100%;background:#000a;display:none;align-items:center;justify-content:center}
-.modal-content{background:#222;padding:20px;border-radius:10px;width:320px}
 </style>
 </head>
 <body>
 <header>
 <h1>Santy SexShop 🚀</h1>
-<p>Modo EMPRESA</p>
-<button class="btn" onclick="toggleTheme()">Tema</button>
-<button class="btn" onclick="login()">Login</button>
-<button class="btn" onclick="openAdmin()">Admin</button>
+<p>Experiência Premium</p>
 </header>
+
 <nav>
-<a href="#">Vibradores</a>
-<a href="#">Lubrificantes</a>
-<a href="#">Fantasias</a>
-<a href="#">Kits</a>
+<a>Vibradores</a>
+<a>Lubrificantes</a>
+<a>Fantasias</a>
+<a>Kits</a>
 </nav>
+
 <div class="carousel">
 <div class="slides" id="slides">
 <div class="slide">🔥 BLACK FRIDAY</div>
 <div class="slide">💋 FRETE GRÁTIS</div>
 <div class="slide">⚡ ENTREGA EXPRESS</div>
-<div class="slide">🎁 BRINDES</div>
-<div class="slide">❤️ MAIS VENDIDOS</div>
 </div>
 </div>
+
+<div class="info">
+<div class="info-box">🚚 Frete rápido</div>
+<div class="info-box">🔒 Discreto</div>
+<div class="info-box">💳 PIX</div>
+<div class="info-box">⭐ Top vendas</div>
+</div>
+
 <div class="container">
-<input placeholder="Buscar produto..." onkeyup="search(this.value)">
 <h2>Produtos</h2>
 <div class="products" id="products"></div>
 </div>
-<div class="cart">
-<h2>Carrinho 🛒</h2>
+
+<button class="cart-toggle" onclick="toggleCart()">🛒<span id="cartCount" class="badge">0</span></button>
+<div id="overlay" class="overlay" onclick="toggleCart()"></div>
+
+<div class="cart" id="cart">
+<h2>Carrinho</h2>
 <ul id="cartItems"></ul>
 <p>Total: R$ <span id="total">0</span></p>
-<button class="btn" onclick="openCheckout()">Finalizar</button>
-<button class="btn" onclick="clearCart()">Limpar</button>
 </div>
-<div class="modal" id="checkoutModal">
-<div class="modal-content">
-<h3>Checkout</h3>
-<input id="name" placeholder="Nome">
-<input id="addr" placeholder="Endereço">
-<canvas id="pix" width="200" height="200"></canvas>
-<button class="btn" onclick="finishOrder()">Gerar PIX</button>
-</div>
-</div>
-<div class="modal" id="adminModal">
-<div class="modal-content">
-<h3>Painel Admin</h3>
-<input id="newName" placeholder="Produto">
-<input id="newPrice" placeholder="Preço">
-<button class="btn" onclick="addProduct()">Adicionar</button>
-<ul id="orders"></ul>
-<button class="btn" onclick="closeAdmin()">Fechar</button>
-</div>
-</div>
+
+<div id="toast" class="toast">Produto adicionado!</div>
+
 <footer>
-<p>© 2026 Santy SexShop</p>
+<p>© Santy</p>
 </footer>
+
 <script>
-let products=JSON.parse(localStorage.getItem('products'))||[
+let products=[
 {name:'Vibrador Deluxe',price:99.9},
 {name:'Lubrificante Premium',price:39.9}
 ];
-let cart=JSON.parse(localStorage.getItem('cart'))||[];
-let orders=JSON.parse(localStorage.getItem('orders'))||[];
-function save(){
-localStorage.setItem('products',JSON.stringify(products));
-localStorage.setItem('cart',JSON.stringify(cart));
-localStorage.setItem('orders',JSON.stringify(orders));
+let cart=[];
+
+function toast(){
+let t=document.getElementById('toast');
+t.classList.add('show');
+setTimeout(()=>t.classList.remove('show'),2000);
 }
-function renderProducts(list=products){
+
+function renderProducts(){
 const c=document.getElementById('products');
 c.innerHTML='';
-list.forEach(p=>{
-c.innerHTML+=`<div class="card"><img src="https://via.placeholder.com/200"><h3>${p.name}</h3><p>R$ ${p.price}</p><button class="btn" onclick="addToCart('${p.name}',${p.price})">Comprar</button></div>`;
+products.forEach(p=>{
+c.innerHTML+=`<div class="card"><img src="https://via.placeholder.com/200"><h3>${p.name}</h3><div class='stars'>★★★★★</div><p>R$ ${p.price}</p><button class="btn" onclick="addToCart('${p.name}',${p.price})">Comprar</button></div>`;
 });}
-function addToCart(n,p){let i=cart.find(x=>x.name===n);if(i){i.qty++}else{cart.push({name:n,price:p,qty:1})}save();renderCart();}
-function renderCart(){let l=document.getElementById('cartItems');let t=0;l.innerHTML='';cart.forEach(i=>{t+=i.price*i.qty;l.innerHTML+=`<li>${i.name} x${i.qty}</li>`});document.getElementById('total').innerText=t.toFixed(2);}
-function clearCart(){cart=[];save();renderCart();}
-function openCheckout(){document.getElementById('checkoutModal').style.display='flex'}
-function finishOrder(){orders.push({date:new Date().toLocaleString(),items:cart});drawPix();save();alert('PIX PRONTO');cart=[];renderCart();}
-function drawPix(){let c=document.getElementById('pix');let ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,200,200);ctx.fillStyle='#000';for(let i=0;i<200;i+=20){for(let j=0;j<200;j+=20){if(Math.random()>0.5)ctx.fillRect(i,j,10,10)}}}
-function openAdmin(){let l=document.getElementById('orders');l.innerHTML='';orders.forEach(o=>{l.innerHTML+=`<li>${o.date} (${o.items.length} itens)</li>`});document.getElementById('adminModal').style.display='flex'}
-function closeAdmin(){document.getElementById('adminModal').style.display='none'}
-function addProduct(){let n=document.getElementById('newName').value;let p=parseFloat(document.getElementById('newPrice').value);if(n&&p){products.push({name:n,price:p});save();renderProducts();}}
-function search(t){renderProducts(products.filter(p=>p.name.toLowerCase().includes(t.toLowerCase())))}
-function toggleTheme(){document.body.classList.toggle('light')}
-function login(){let u=prompt('Nome:');if(u){localStorage.setItem('user',u);alert('Bem-vindo '+u)}}
-let i=0;setInterval(()=>{i=(i+1)%5;document.getElementById('slides').style.transform=`translateX(-${i*100}%)`},2000);
-renderProducts();renderCart();
+
+function addToCart(n,p){
+let i=cart.find(x=>x.name===n);
+if(i){i.qty++}else{cart.push({name:n,price:p,qty:1})}
+renderCart();updateBadge();toast();
+}
+
+function renderCart(){
+let l=document.getElementById('cartItems');
+let t=0;l.innerHTML='';
+cart.forEach(i=>{
+t+=i.price*i.qty;
+l.innerHTML+=`<li>${i.name} x${i.qty} - R$ ${(i.price*i.qty).toFixed(2)}</li>`;
+});
+document.getElementById('total').innerText=t.toFixed(2);
+}
+
+function updateBadge(){
+let count=cart.reduce((a,b)=>a+b.qty,0);
+document.getElementById('cartCount').innerText=count;
+}
+
+function toggleCart(){
+document.getElementById('cart').classList.toggle('open');
+document.getElementById('overlay').classList.toggle('show');
+}
+
+let i=0;
+setInterval(()=>{
+i=(i+1)%3;
+document.getElementById('slides').style.transform=`translateX(-${i*100}%)`
+},2000);
+
+renderProducts();
 </script>
 </body>
 </html>
